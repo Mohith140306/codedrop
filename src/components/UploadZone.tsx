@@ -246,7 +246,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
             className="w-full mt-6"
           >
             <Shield className="w-4 h-4 mr-2" />
-            Create Secure Share Link
+            Create Secure Content
           </Button>
         </div>
       </Card>
