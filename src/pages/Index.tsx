@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Lock, FileText, Code, Zap, Download, Eye } from 'lucide-react';
+import { Shield, Lock, FileText, Code, Zap, Download, Eye, Copy } from 'lucide-react';
 import { UploadZone } from '@/components/UploadZone';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -178,6 +178,25 @@ const Index = () => {
     }
   };
 
+  const handleCopyCode = async () => {
+    if (!accessedContent || accessedContent.type !== 'code') return;
+
+    try {
+      await navigator.clipboard.writeText(accessedContent.content);
+      toast({
+        title: "Code Copied!",
+        description: "The code has been copied to your clipboard.",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Copy Failed",
+        description: "Unable to copy the code to your clipboard.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleNewAccess = () => {
     setAccessedContent(null);
     setAccessPassword('');
@@ -205,6 +224,12 @@ const Index = () => {
               </div>
               
               <div className="flex items-center gap-2">
+                {accessedContent.type === 'code' && (
+                  <Button onClick={handleCopyCode} variant="outline" size="sm">
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy
+                  </Button>
+                )}
                 <Button onClick={handleDownload} variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />
                   Download
