@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, Download, Copy, FileText, Lock } from 'lucide-react';
+import { Eye, Download, Copy, FileText, Key } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,20 +13,20 @@ interface StoredContent {
   language?: string;
   expiration: string;
   createdAt: string;
-  password: string;
+  code: string;
 }
 
 const Get = () => {
-  const [accessPassword, setAccessPassword] = useState('');
+  const [accessCode, setAccessCode] = useState('');
   const [accessedContent, setAccessedContent] = useState<StoredContent | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleAccess = async () => {
-    if (!accessPassword) {
+    if (!accessCode) {
       toast({
-        title: "Password Required",
-        description: "Please enter the password to access content.",
+        title: "Access Code Required",
+        description: "Please enter the access code to view content.",
         variant: "destructive",
       });
       return;
@@ -37,39 +37,36 @@ const Get = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Search through stored content for matching password
+      // Try to access content directly with the code
+      const stored = localStorage.getItem(`secure_content_${accessCode.toUpperCase()}`);
       let foundContent: StoredContent | null = null;
       
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key?.startsWith('secure_content_')) {
-          const stored = localStorage.getItem(key);
-          if (stored) {
-            const content: StoredContent = JSON.parse(stored);
-            if (content.password === accessPassword) {
-              // Check if content has expired
-              const now = new Date();
-              const created = new Date(content.createdAt);
-              const isExpired = () => {
-                switch (content.expiration) {
-                  case '1h': return now.getTime() - created.getTime() > 60 * 60 * 1000;
-                  case '24h': return now.getTime() - created.getTime() > 24 * 60 * 60 * 1000;
-                  case '7d': return now.getTime() - created.getTime() > 7 * 24 * 60 * 60 * 1000;
-                  case '30d': return now.getTime() - created.getTime() > 30 * 24 * 60 * 60 * 1000;
-                  case 'never': return false;
-                  default: return false;
-                }
-              };
-              
-              if (isExpired()) {
-                localStorage.removeItem(key);
-                continue;
-              }
-              
-              foundContent = content;
-              break;
-            }
+      if (stored) {
+        const content: StoredContent = JSON.parse(stored);
+        
+        // Check if content has expired
+        const now = new Date();
+        const created = new Date(content.createdAt);
+        const isExpired = () => {
+          switch (content.expiration) {
+            case '1h': return now.getTime() - created.getTime() > 60 * 60 * 1000;
+            case '24h': return now.getTime() - created.getTime() > 24 * 60 * 60 * 1000;
+            case '7d': return now.getTime() - created.getTime() > 7 * 24 * 60 * 60 * 1000;
+            case '30d': return now.getTime() - created.getTime() > 30 * 24 * 60 * 60 * 1000;
+            case 'never': return false;
+            default: return false;
           }
+        };
+        
+        if (isExpired()) {
+          localStorage.removeItem(`secure_content_${accessCode.toUpperCase()}`);
+          toast({
+            title: "Content Expired",
+            description: "This content has expired and is no longer available.",
+            variant: "destructive",
+          });
+        } else {
+          foundContent = content;
         }
       }
       
@@ -82,8 +79,8 @@ const Get = () => {
         });
       } else {
         toast({
-          title: "Invalid Password",
-          description: "No content found with that password, or content may have expired.",
+          title: "Invalid Access Code",
+          description: "No content found with that access code, or content may have expired.",
           variant: "destructive",
         });
       }
@@ -142,7 +139,7 @@ const Get = () => {
 
   const handleNewAccess = () => {
     setAccessedContent(null);
-    setAccessPassword('');
+    setAccessCode('');
   };
 
   if (accessedContent) {
@@ -224,7 +221,7 @@ const Get = () => {
             Access Content
           </h1>
           <p className="text-lg text-muted-foreground">
-            Enter the password to access shared files or code.
+            Enter the access code to view shared files or code.
           </p>
         </div>
 
@@ -232,25 +229,26 @@ const Get = () => {
         <Card className="p-8 shadow-medium animate-scale-in">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <Lock className="w-6 h-6 text-primary" />
+              <Key className="w-6 h-6 text-primary" />
               <h2 className="text-xl font-semibold text-foreground">
-                Enter Password
+                Enter Access Code
               </h2>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="accessPassword" className="text-sm font-medium">
-                  Password
+                <Label htmlFor="accessCode" className="text-sm font-medium">
+                  Access Code
                 </Label>
                 <Input
-                  id="accessPassword"
-                  type="password"
-                  placeholder="Enter password to access content"
-                  value={accessPassword}
-                  onChange={(e) => setAccessPassword(e.target.value)}
+                  id="accessCode"
+                  type="text"
+                  placeholder="Enter 12-character access code"
+                  value={accessCode}
+                  onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
                   onKeyPress={(e) => e.key === 'Enter' && handleAccess()}
-                  className="transition-smooth"
+                  className="transition-smooth font-mono text-center tracking-widest"
+                  maxLength={12}
                 />
               </div>
               
@@ -284,7 +282,7 @@ const Get = () => {
               🔐 Secure Access
             </h3>
             <p className="text-sm text-muted-foreground">
-              Content is password-protected and may have expiration dates. Make sure you have the correct password from the sender.
+              Content is secured with unique access codes and may have expiration dates. Make sure you have the correct code from the sender.
             </p>
           </div>
         </Card>

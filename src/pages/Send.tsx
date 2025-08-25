@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { FileText, Upload } from 'lucide-react';
+import { FileText, Upload, Shield } from 'lucide-react';
 import { UploadZone } from '@/components/UploadZone';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
 interface StoredContent {
@@ -11,22 +12,32 @@ interface StoredContent {
   language?: string;
   expiration: string;
   createdAt: string;
-  password: string;
+  code: string;
 }
 
 const Send = () => {
   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
+  const [generatedCode, setGeneratedCode] = useState<string | null>(null);
+
+  const generateUniqueCode = (): string => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
 
   const handleUpload = (data: {
     type: 'file' | 'code';
     content: string | File;
-    password: string;
     expiration: string;
     filename?: string;
     language?: string;
   }) => {
     setIsUploading(true);
+    const uniqueCode = generateUniqueCode();
     
     // Convert file to base64 string for storage
     if (data.type === 'file' && data.content instanceof File) {
@@ -39,16 +50,16 @@ const Send = () => {
           language: data.language,
           expiration: data.expiration,
           createdAt: new Date().toISOString(),
-          password: data.password,
+          code: uniqueCode,
         };
         
         // Store in localStorage (in real app, this would be server-side)
-        const contentId = Math.random().toString(36).substring(7);
-        localStorage.setItem(`secure_content_${contentId}`, JSON.stringify(storedContent));
+        localStorage.setItem(`secure_content_${uniqueCode}`, JSON.stringify(storedContent));
         
+        setGeneratedCode(uniqueCode);
         toast({
           title: "Content Stored Successfully!",
-          description: "Your content has been secured. Others can access it using the password you set.",
+          description: `Your content is secured with code: ${uniqueCode}`,
           variant: "default",
         });
         setIsUploading(false);
@@ -62,15 +73,15 @@ const Send = () => {
         language: data.language,
         expiration: data.expiration,
         createdAt: new Date().toISOString(),
-        password: data.password,
+        code: uniqueCode,
       };
       
-      const contentId = Math.random().toString(36).substring(7);
-      localStorage.setItem(`secure_content_${contentId}`, JSON.stringify(storedContent));
+      localStorage.setItem(`secure_content_${uniqueCode}`, JSON.stringify(storedContent));
       
+      setGeneratedCode(uniqueCode);
       toast({
         title: "Content Stored Successfully!",
-        description: "Your content has been secured. Others can access it using the password you set.",
+        description: `Your content is secured with code: ${uniqueCode}`,
         variant: "default",
       });
       setIsUploading(false);
@@ -89,7 +100,7 @@ const Send = () => {
             Share Your Content
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Upload files or paste code snippets to share them securely with a password.
+            Upload files or paste code snippets to share them securely with a unique access code.
           </p>
         </div>
 
@@ -114,7 +125,7 @@ const Send = () => {
               🔒 Secure by Design
             </h3>
             <p className="text-muted-foreground">
-              All content is password-protected and stored securely. Only those with the correct password can access your shared content.
+              All content is secured with unique access codes and stored safely. Only those with the correct code can access your shared content.
             </p>
           </Card>
           
@@ -127,6 +138,52 @@ const Send = () => {
             </p>
           </Card>
         </div>
+
+        {/* Generated Code Display */}
+        {generatedCode && (
+          <Card className="p-8 shadow-medium animate-scale-in bg-accent/5 border-accent/20">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 mx-auto bg-success rounded-full flex items-center justify-center">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">Content Secured!</h2>
+              <p className="text-muted-foreground">
+                Your content has been secured. Share this access code with others:
+              </p>
+              <div className="bg-muted rounded-lg p-6 border-2 border-dashed border-primary/20">
+                <div className="text-3xl font-mono font-bold text-primary tracking-widest">
+                  {generatedCode}
+                </div>
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(generatedCode);
+                    toast({
+                      title: "Code Copied!",
+                      description: "The access code has been copied to your clipboard.",
+                    });
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="mt-4"
+                >
+                  Copy Code
+                </Button>
+              </div>
+              <div className="text-sm text-muted-foreground space-y-1">
+                <p>• Keep this code secure and only share it with trusted individuals</p>
+                <p>• Anyone with this code can access your shared content</p>
+                <p>• The content will expire based on your selected timeframe</p>
+              </div>
+              <Button
+                onClick={() => setGeneratedCode(null)}
+                variant="outline"
+                className="mt-4"
+              >
+                Share More Content
+              </Button>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

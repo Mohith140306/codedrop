@@ -12,7 +12,6 @@ interface UploadZoneProps {
   onUpload: (data: {
     type: 'file' | 'code';
     content: string | File;
-    password: string;
     expiration: string;
     filename?: string;
     language?: string;
@@ -22,7 +21,6 @@ interface UploadZoneProps {
 export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
   const [activeTab, setActiveTab] = useState<'file' | 'code'>('file');
   const [dragActive, setDragActive] = useState(false);
-  const [password, setPassword] = useState('');
   const [expiration, setExpiration] = useState('24h');
   const [codeContent, setCodeContent] = useState('');
   const [language, setLanguage] = useState('javascript');
@@ -60,15 +58,6 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
   };
 
   const handleShare = () => {
-    if (!password) {
-      toast({
-        title: "Password Required",
-        description: "Please set a password for your shared content.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (activeTab === 'file' && !selectedFile) {
       toast({
         title: "No File Selected",
@@ -90,7 +79,6 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
     const data = {
       type: activeTab,
       content: activeTab === 'file' ? selectedFile! : codeContent,
-      password,
       expiration,
       filename: selectedFile?.name,
       language: activeTab === 'code' ? language : undefined,
@@ -204,39 +192,23 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
             <h3 className="font-semibold">Security Settings</h3>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">
-                Password (Required)
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter a secure password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="transition-smooth"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label className="text-sm font-medium flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                Expiration
-              </Label>
-              <Select value={expiration} onValueChange={setExpiration}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1h">1 Hour</SelectItem>
-                  <SelectItem value="24h">24 Hours</SelectItem>
-                  <SelectItem value="7d">7 Days</SelectItem>
-                  <SelectItem value="30d">30 Days</SelectItem>
-                  <SelectItem value="never">Never</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Expiration
+            </Label>
+            <Select value={expiration} onValueChange={setExpiration}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1h">1 Hour</SelectItem>
+                <SelectItem value="24h">24 Hours</SelectItem>
+                <SelectItem value="7d">7 Days</SelectItem>
+                <SelectItem value="30d">30 Days</SelectItem>
+                <SelectItem value="never">Never</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           <Button
