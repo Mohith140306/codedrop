@@ -21,7 +21,10 @@ const Navbar = () => {
             <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
               <Send className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-foreground">Sendix</span>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold text-foreground">Sendix</span>
+              <span className="text-xs text-muted-foreground font-medium tracking-wide">by Ropebit Labs</span>
+            </div>
           </Link>
 
           {/* Navigation Links */}
@@ -31,7 +34,7 @@ const Navbar = () => {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "relative px-3 py-2 text-sm font-medium transition-smooth story-link",
+                  "relative px-3 py-2 text-sm font-semibold tracking-wide uppercase transition-smooth story-link",
                   location.pathname === item.path
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
