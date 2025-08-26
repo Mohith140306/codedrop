@@ -14,13 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      shared_content: {
+        Row: {
+          access_code: string
+          content_text: string | null
+          content_type: string
+          created_at: string
+          expires_at: string
+          file_path: string | null
+          filename: string | null
+          id: string
+          language: string | null
+        }
+        Insert: {
+          access_code: string
+          content_text?: string | null
+          content_type: string
+          created_at?: string
+          expires_at: string
+          file_path?: string | null
+          filename?: string | null
+          id?: string
+          language?: string | null
+        }
+        Update: {
+          access_code?: string
+          content_text?: string | null
+          content_type?: string
+          created_at?: string
+          expires_at?: string
+          file_path?: string | null
+          filename?: string | null
+          id?: string
+          language?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_expired_content: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
