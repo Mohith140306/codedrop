@@ -5,28 +5,28 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
-interface StoredContent {
+interface AccessedContent {
   type: 'file' | 'code';
   content: string;
   filename?: string;
   language?: string;
-  expiration: string;
-  createdAt: string;
-  code: string;
+  access_code: string;
+  file_path?: string;
 }
 
 const Get = () => {
   const [accessCode, setAccessCode] = useState('');
-  const [accessedContent, setAccessedContent] = useState<StoredContent | null>(null);
+  const [accessedContent, setAccessedContent] = useState<AccessedContent | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleAccess = async () => {
-    if (!accessCode) {
+    if (!accessCode || accessCode.length !== 4) {
       toast({
-        title: "Access Code Required",
-        description: "Please enter the access code to view content.",
+        title: "Invalid Access Code",
+        description: "Please enter a valid 4-character access code.",
         variant: "destructive",
       });
       return;
@@ -35,56 +35,79 @@ const Get = () => {
     setIsLoading(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Try to access content directly with the code
-      const stored = localStorage.getItem(`secure_content_${accessCode.toUpperCase()}`);
-      let foundContent: StoredContent | null = null;
-      
-      if (stored) {
-        const content: StoredContent = JSON.parse(stored);
-        
-        // Check if content has expired
-        const now = new Date();
-        const created = new Date(content.createdAt);
-        const isExpired = () => {
-          switch (content.expiration) {
-            case '1h': return now.getTime() - created.getTime() > 60 * 60 * 1000;
-            case '24h': return now.getTime() - created.getTime() > 24 * 60 * 60 * 1000;
-            case '7d': return now.getTime() - created.getTime() > 7 * 24 * 60 * 60 * 1000;
-            case '30d': return now.getTime() - created.getTime() > 30 * 24 * 60 * 60 * 1000;
-            case 'never': return false;
-            default: return false;
-          }
-        };
-        
-        if (isExpired()) {
-          localStorage.removeItem(`secure_content_${accessCode.toUpperCase()}`);
-          toast({
-            title: "Content Expired",
-            description: "This content has expired and is no longer available.",
-            variant: "destructive",
-          });
-        } else {
-          foundContent = content;
-        }
+      // Query the database for the content
+      const { data, error } = await supabase
+        .from('shared_content')
+        .select('*')
+        .eq('access_code', accessCode.toUpperCase())
+        .maybeSingle();
+
+      if (error) {
+        throw error;
       }
-      
-      if (foundContent) {
-        setAccessedContent(foundContent);
-        toast({
-          title: "Content Accessed!",
-          description: "You now have access to the secured content.",
-          variant: "default",
-        });
-      } else {
+
+      if (!data) {
         toast({
           title: "Invalid Access Code",
-          description: "No content found with that access code, or content may have expired.",
+          description: "No content found with that access code.",
           variant: "destructive",
         });
+        return;
       }
+
+      // Check if content has expired
+      const now = new Date();
+      const expiresAt = new Date(data.expires_at);
+      
+      if (now > expiresAt) {
+        toast({
+          title: "Content Expired",
+          description: "This content has expired and is no longer available.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      let content: string;
+      
+      if (data.content_type === 'file') {
+        // Download file from Supabase Storage
+        const { data: fileData, error: downloadError } = await supabase.storage
+          .from('shared-files')
+          .download(data.file_path!);
+
+        if (downloadError) {
+          throw downloadError;
+        }
+
+        // Convert blob to data URL for display
+        const reader = new FileReader();
+        content = await new Promise((resolve, reject) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(fileData);
+        });
+      } else {
+        content = data.content_text!;
+      }
+
+      const accessedContent: AccessedContent = {
+        type: data.content_type as 'file' | 'code',
+        content,
+        filename: data.filename || undefined,
+        language: data.language || undefined,
+        access_code: data.access_code,
+        file_path: data.file_path || undefined,
+      };
+
+      setAccessedContent(accessedContent);
+      toast({
+        title: "Content Accessed!",
+        description: "You now have access to the secured content.",
+        variant: "default",
+      });
     } catch (error) {
+      console.error('Error accessing content:', error);
       toast({
         title: "Access Failed",
         description: "Something went wrong while accessing the content.",
@@ -95,26 +118,61 @@ const Get = () => {
     }
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!accessedContent) return;
 
-    if (accessedContent.type === 'file' && accessedContent.content.startsWith('data:')) {
-      // Handle file download
-      const element = document.createElement('a');
-      element.href = accessedContent.content;
-      element.download = accessedContent.filename || 'downloaded-file';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-    } else {
-      // Handle code download
-      const element = document.createElement('a');
-      const file = new Blob([accessedContent.content], { type: 'text/plain' });
-      element.href = URL.createObjectURL(file);
-      element.download = `code.${accessedContent.language || 'txt'}`;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
+    try {
+      if (accessedContent.type === 'file') {
+        if (accessedContent.content.startsWith('data:')) {
+          // Handle data URL download
+          const element = document.createElement('a');
+          element.href = accessedContent.content;
+          element.download = accessedContent.filename || 'downloaded-file';
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        } else if (accessedContent.file_path) {
+          // Download directly from Supabase Storage
+          const { data, error } = await supabase.storage
+            .from('shared-files')
+            .download(accessedContent.file_path);
+
+          if (error) {
+            throw error;
+          }
+
+          const url = URL.createObjectURL(data);
+          const element = document.createElement('a');
+          element.href = url;
+          element.download = accessedContent.filename || 'downloaded-file';
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+          URL.revokeObjectURL(url);
+        }
+      } else {
+        // Handle code download
+        const element = document.createElement('a');
+        const file = new Blob([accessedContent.content], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `code.${accessedContent.language || 'txt'}`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        URL.revokeObjectURL(element.href);
+      }
+
+      toast({
+        title: "Download Started",
+        description: "Your file is being downloaded.",
+      });
+    } catch (error) {
+      console.error('Download error:', error);
+      toast({
+        title: "Download Failed",
+        description: "There was an error downloading the file.",
+        variant: "destructive",
+      });
     }
   };
 

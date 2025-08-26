@@ -5,6 +5,7 @@ import { CodeShareDialog } from '@/components/CodeShareDialog';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface StoredContent {
   type: 'file' | 'code';
@@ -31,7 +32,7 @@ const Send = () => {
     return result;
   };
 
-  const handleUpload = (data: {
+  const handleUpload = async (data: {
     type: 'file' | 'code';
     content: string | File;
     expiration: string;
@@ -40,44 +41,82 @@ const Send = () => {
   }) => {
     setIsUploading(true);
     const uniqueCode = generateUniqueCode();
-    
-    // Convert file to base64 string for storage
-    if (data.type === 'file' && data.content instanceof File) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const storedContent: StoredContent = {
-          type: data.type,
-          content: reader.result as string,
-          filename: data.filename,
-          language: data.language,
-          expiration: data.expiration,
-          createdAt: new Date().toISOString(),
-          code: uniqueCode,
-        };
+
+    try {
+      // Calculate expiration date
+      const expiresAt = new Date();
+      if (data.expiration === '1h') {
+        expiresAt.setHours(expiresAt.getHours() + 1);
+      } else if (data.expiration === '24h') {
+        expiresAt.setHours(expiresAt.getHours() + 24);
+      } else if (data.expiration === '7d') {
+        expiresAt.setDate(expiresAt.getDate() + 7);
+      } else if (data.expiration === '30d') {
+        expiresAt.setDate(expiresAt.getDate() + 30);
+      } else {
+        // "never" - set to 100 years from now
+        expiresAt.setFullYear(expiresAt.getFullYear() + 100);
+      }
+
+      if (data.type === 'file' && data.content instanceof File) {
+        // Upload file to Supabase Storage
+        const fileExt = data.content.name.split('.').pop();
+        const fileName = `${uniqueCode}.${fileExt}`;
         
-        // Store in localStorage (in real app, this would be server-side)
-        localStorage.setItem(`secure_content_${uniqueCode}`, JSON.stringify(storedContent));
-        
-        setGeneratedCode(uniqueCode);
-        setShowCodeDialog(true);
-        setIsUploading(false);
-      };
-      reader.readAsDataURL(data.content);
-    } else {
-      const storedContent: StoredContent = {
-        type: data.type,
-        content: data.content as string,
-        filename: data.filename,
-        language: data.language,
-        expiration: data.expiration,
-        createdAt: new Date().toISOString(),
-        code: uniqueCode,
-      };
-      
-      localStorage.setItem(`secure_content_${uniqueCode}`, JSON.stringify(storedContent));
-      
+        const { error: uploadError } = await supabase.storage
+          .from('shared-files')
+          .upload(fileName, data.content);
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        // Store metadata in database
+        const { error: dbError } = await supabase
+          .from('shared_content')
+          .insert({
+            access_code: uniqueCode,
+            content_type: 'file',
+            file_path: fileName,
+            filename: data.content.name,
+            expires_at: expiresAt.toISOString(),
+          });
+
+        if (dbError) {
+          throw dbError;
+        }
+      } else {
+        // Store code content in database
+        const { error: dbError } = await supabase
+          .from('shared_content')
+          .insert({
+            access_code: uniqueCode,
+            content_type: 'code',
+            content_text: data.content as string,
+            filename: data.filename,
+            language: data.language,
+            expires_at: expiresAt.toISOString(),
+          });
+
+        if (dbError) {
+          throw dbError;
+        }
+      }
+
       setGeneratedCode(uniqueCode);
       setShowCodeDialog(true);
+      toast({
+        title: "Content Shared Successfully",
+        description: `Your content has been secured with access code: ${uniqueCode}`,
+      });
+    } catch (error) {
+      console.error('Error uploading content:', error);
+      toast({
+        title: "Upload Failed",
+        description: "There was an error sharing your content. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsUploading(false);
     }
   };
