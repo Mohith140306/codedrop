@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FileText, Upload, Shield } from 'lucide-react';
 import { UploadZone } from '@/components/UploadZone';
+import { CodeShareDialog } from '@/components/CodeShareDialog';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -19,11 +20,12 @@ const Send = () => {
   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
+  const [showCodeDialog, setShowCodeDialog] = useState(false);
 
   const generateUniqueCode = (): string => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const chars = '0123456789';
     let result = '';
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 4; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
@@ -57,11 +59,7 @@ const Send = () => {
         localStorage.setItem(`secure_content_${uniqueCode}`, JSON.stringify(storedContent));
         
         setGeneratedCode(uniqueCode);
-        toast({
-          title: "Content Stored Successfully!",
-          description: `Your content is secured with code: ${uniqueCode}`,
-          variant: "default",
-        });
+        setShowCodeDialog(true);
         setIsUploading(false);
       };
       reader.readAsDataURL(data.content);
@@ -79,11 +77,7 @@ const Send = () => {
       localStorage.setItem(`secure_content_${uniqueCode}`, JSON.stringify(storedContent));
       
       setGeneratedCode(uniqueCode);
-      toast({
-        title: "Content Stored Successfully!",
-        description: `Your content is secured with code: ${uniqueCode}`,
-        variant: "default",
-      });
+      setShowCodeDialog(true);
       setIsUploading(false);
     }
   };
@@ -139,50 +133,16 @@ const Send = () => {
           </Card>
         </div>
 
-        {/* Generated Code Display */}
+        {/* Code Share Dialog */}
         {generatedCode && (
-          <Card className="p-8 shadow-medium animate-scale-in bg-accent/5 border-accent/20">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto bg-success rounded-full flex items-center justify-center">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-foreground">Content Secured!</h2>
-              <p className="text-muted-foreground">
-                Your content has been secured. Share this access code with others:
-              </p>
-              <div className="bg-muted rounded-lg p-6 border-2 border-dashed border-primary/20">
-                <div className="text-3xl font-mono font-bold text-primary tracking-widest">
-                  {generatedCode}
-                </div>
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(generatedCode);
-                    toast({
-                      title: "Code Copied!",
-                      description: "The access code has been copied to your clipboard.",
-                    });
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="mt-4"
-                >
-                  Copy Code
-                </Button>
-              </div>
-              <div className="text-sm text-muted-foreground space-y-1">
-                <p>• Keep this code secure and only share it with trusted individuals</p>
-                <p>• Anyone with this code can access your shared content</p>
-                <p>• The content will expire based on your selected timeframe</p>
-              </div>
-              <Button
-                onClick={() => setGeneratedCode(null)}
-                variant="outline"
-                className="mt-4"
-              >
-                Share More Content
-              </Button>
-            </div>
-          </Card>
+          <CodeShareDialog
+            isOpen={showCodeDialog}
+            onClose={() => {
+              setShowCodeDialog(false);
+              setGeneratedCode(null);
+            }}
+            code={generatedCode}
+          />
         )}
       </div>
     </div>
