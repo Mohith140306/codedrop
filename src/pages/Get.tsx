@@ -243,12 +243,12 @@ const Get = () => {
                 <Input
                   id="accessCode"
                   type="text"
-                  placeholder="Enter 12-character access code"
+                  placeholder="Enter 4-character access code"
                   value={accessCode}
                   onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
                   onKeyPress={(e) => e.key === 'Enter' && handleAccess()}
                   className="transition-smooth font-mono text-center tracking-widest"
-                  maxLength={12}
+                  maxLength={4}
                 />
               </div>
               
