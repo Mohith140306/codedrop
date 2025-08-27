@@ -103,8 +103,10 @@ const Send = () => {
         }
       }
 
+      // Immediately show code and display success
       setGeneratedCode(uniqueCode);
       setShowCodeDialog(true);
+      
       toast({
         title: "Content Shared Successfully",
         description: `Your content has been secured with access code: ${uniqueCode}`,

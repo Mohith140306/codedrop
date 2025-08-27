@@ -25,6 +25,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
   const [codeContent, setCodeContent] = useState('');
   const [language, setLanguage] = useState('javascript');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -57,7 +58,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
     }
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (activeTab === 'file' && !selectedFile) {
       toast({
         title: "No File Selected",
@@ -76,6 +77,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
       return;
     }
 
+    setIsUploading(true);
+    
     const data = {
       type: activeTab,
       content: activeTab === 'file' ? selectedFile! : codeContent,
@@ -84,7 +87,14 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
       language: activeTab === 'code' ? language : undefined,
     };
 
-    onUpload(data);
+    try {
+      await onUpload(data);
+    } finally {
+      setIsUploading(false);
+      // Reset form after successful upload
+      setSelectedFile(null);
+      setCodeContent('');
+    }
   };
 
   return (
@@ -215,10 +225,20 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
             onClick={handleShare}
             variant="secure"
             size="lg"
-            className="w-full mt-6"
+            disabled={isUploading}
+            className="w-full mt-6 animate-pulse hover:animate-none transition-all duration-200 hover:scale-105"
           >
-            <Shield className="w-4 h-4 mr-2" />
-            Create Secure Content
+            {isUploading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                Creating Secure Content...
+              </>
+            ) : (
+              <>
+                <Shield className="w-4 h-4 mr-2" />
+                Create Secure Content
+              </>
+            )}
           </Button>
         </div>
       </Card>

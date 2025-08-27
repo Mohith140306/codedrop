@@ -25,8 +25,9 @@ const App = () => (
               <Route path="/" element={<Home />} />
               <Route path="/send" element={<Send />} />
               <Route path="/get" element={<Get />} />
+              <Route path="/index" element={<Navigate to="/" replace />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           <Footer />
