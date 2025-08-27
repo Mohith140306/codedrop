@@ -35,18 +35,17 @@ const Get = () => {
     setIsLoading(true);
     
     try {
-      // Query the database for the content
+      // Use secure function to access content by access code
       const { data, error } = await supabase
-        .from('shared_content')
-        .select('*')
-        .eq('access_code', accessCode.toUpperCase())
-        .maybeSingle();
+        .rpc('get_shared_content_by_access_code', {
+          p_access_code: accessCode.toUpperCase()
+        });
 
       if (error) {
         throw error;
       }
 
-      if (!data) {
+      if (!data || data.length === 0) {
         toast({
           title: "Invalid Access Code",
           description: "No content found with that access code.",
@@ -55,9 +54,12 @@ const Get = () => {
         return;
       }
 
-      // Check if content has expired
+      // Get the first (and only) result from the RPC function
+      const contentRecord = data[0];
+
+      // Check if content has expired (already handled by the function, but keeping for safety)
       const now = new Date();
-      const expiresAt = new Date(data.expires_at);
+      const expiresAt = new Date(contentRecord.expires_at);
       
       if (now > expiresAt) {
         toast({
@@ -70,11 +72,11 @@ const Get = () => {
 
       let content: string;
       
-      if (data.content_type === 'file') {
+      if (contentRecord.content_type === 'file') {
         // Download file from Supabase Storage
         const { data: fileData, error: downloadError } = await supabase.storage
           .from('shared-files')
-          .download(data.file_path!);
+          .download(contentRecord.file_path!);
 
         if (downloadError) {
           throw downloadError;
@@ -88,16 +90,16 @@ const Get = () => {
           reader.readAsDataURL(fileData);
         });
       } else {
-        content = data.content_text!;
+        content = contentRecord.content_text!;
       }
 
       const accessedContent: AccessedContent = {
-        type: data.content_type as 'file' | 'code',
+        type: contentRecord.content_type as 'file' | 'code',
         content,
-        filename: data.filename || undefined,
-        language: data.language || undefined,
-        access_code: data.access_code,
-        file_path: data.file_path || undefined,
+        filename: contentRecord.filename || undefined,
+        language: contentRecord.language || undefined,
+        access_code: contentRecord.access_code,
+        file_path: contentRecord.file_path || undefined,
       };
 
       setAccessedContent(accessedContent);

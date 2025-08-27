@@ -59,6 +59,20 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      get_shared_content_by_access_code: {
+        Args: { p_access_code: string }
+        Returns: {
+          access_code: string
+          content_text: string
+          content_type: string
+          created_at: string
+          expires_at: string
+          file_path: string
+          filename: string
+          id: string
+          language: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
