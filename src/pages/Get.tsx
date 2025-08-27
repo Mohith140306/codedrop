@@ -48,7 +48,7 @@ const Get = () => {
       if (!data || data.length === 0) {
         toast({
           title: "Invalid Access Code",
-          description: "No content found with that access code.",
+          description: "No content found with that access code or content has expired.",
           variant: "destructive",
         });
         return;
