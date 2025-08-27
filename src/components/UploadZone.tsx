@@ -226,7 +226,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
             variant="secure"
             size="lg"
             disabled={isUploading}
-            className="w-full mt-6 animate-pulse hover:animate-none transition-all duration-200 hover:scale-105"
+            className="w-full mt-6 transition-all duration-200 hover:scale-105 hover:shadow-lg"
           >
             {isUploading ? (
               <>
