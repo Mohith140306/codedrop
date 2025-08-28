@@ -98,31 +98,31 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
+    <div className="w-full max-w-4xl mx-auto space-y-4 md:space-y-6 px-3 md:px-0">
       {/* Tab Selection */}
       <div className="flex justify-center space-x-2">
         <Button
           variant={activeTab === 'file' ? 'secure' : 'outline'}
           onClick={() => setActiveTab('file')}
-          className="flex items-center gap-2"
+          className="flex items-center gap-1 md:gap-2 text-xs md:text-sm px-3 md:px-4"
         >
-          <Upload className="w-4 h-4" />
-          Share File
+          <Upload className="w-3 h-3 md:w-4 md:h-4" />
+          <span className="hidden sm:inline">Share </span>File
         </Button>
         <Button
           variant={activeTab === 'code' ? 'secure' : 'outline'}
           onClick={() => setActiveTab('code')}
-          className="flex items-center gap-2"
+          className="flex items-center gap-1 md:gap-2 text-xs md:text-sm px-3 md:px-4"
         >
-          <FileText className="w-4 h-4" />
-          Share Code
+          <FileText className="w-3 h-3 md:w-4 md:h-4" />
+          <span className="hidden sm:inline">Share </span>Code
         </Button>
       </div>
 
-      <Card className="p-8 shadow-medium">
+      <Card className="p-4 md:p-8 shadow-medium">
         {activeTab === 'file' ? (
           <div
-            className={`upload-zone border-2 border-dashed rounded-lg p-12 text-center ${
+            className={`upload-zone border-2 border-dashed rounded-lg p-6 md:p-12 text-center ${
               dragActive ? 'dragover' : 'border-border hover:border-accent'
             }`}
             onDragEnter={handleDrag}
@@ -138,26 +138,28 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
               className="hidden"
             />
             
-            <div className="space-y-4">
-              <div className="w-16 h-16 mx-auto gradient-accent rounded-full flex items-center justify-center">
-                <Upload className="w-8 h-8 text-accent-foreground" />
+            <div className="space-y-3 md:space-y-4">
+              <div className="w-12 h-12 md:w-16 md:h-16 mx-auto gradient-accent rounded-full flex items-center justify-center">
+                <Upload className="w-6 h-6 md:w-8 md:h-8 text-accent-foreground" />
               </div>
               
               {selectedFile ? (
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground">File Selected</h3>
-                  <p className="text-muted-foreground">{selectedFile.name}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <h3 className="text-base md:text-lg font-semibold text-foreground">File Selected</h3>
+                  <p className="text-sm md:text-base text-muted-foreground break-all">{selectedFile.name}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">
                     {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                 </div>
               ) : (
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground">
-                    Drag & drop your file here
+                  <h3 className="text-base md:text-lg font-semibold text-foreground">
+                    <span className="hidden sm:inline">Drag & drop your file here</span>
+                    <span className="sm:hidden">Tap to select file</span>
                   </h3>
-                  <p className="text-muted-foreground">
-                    or click to browse files
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    <span className="hidden sm:inline">or click to browse files</span>
+                    <span className="sm:hidden">Choose a file to share</span>
                   </p>
                 </div>
               )}
@@ -165,10 +167,10 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               <Label htmlFor="language" className="text-sm font-medium">Language:</Label>
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-full sm:w-48">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -190,25 +192,25 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
               placeholder="Paste your code here..."
               value={codeContent}
               onChange={(e) => setCodeContent(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[200px] md:min-h-[300px] font-mono text-xs md:text-sm"
             />
           </div>
         )}
 
         {/* Security Options */}
-        <div className="mt-6 pt-6 border-t space-y-4">
-          <div className="flex items-center gap-2 text-primary mb-4">
-            <Shield className="w-5 h-5" />
-            <h3 className="font-semibold">Security Settings</h3>
+        <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t space-y-3 md:space-y-4">
+          <div className="flex items-center gap-2 text-primary mb-2 md:mb-4">
+            <Shield className="w-4 h-4 md:w-5 md:h-5" />
+            <h3 className="text-sm md:text-base font-semibold">Security Settings</h3>
           </div>
           
           <div className="space-y-2">
-            <Label className="text-sm font-medium flex items-center gap-2">
-              <Clock className="w-4 h-4" />
+            <Label className="text-xs md:text-sm font-medium flex items-center gap-2">
+              <Clock className="w-3 h-3 md:w-4 md:h-4" />
               Expiration
             </Label>
             <Select value={expiration} onValueChange={setExpiration}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -226,17 +228,19 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
             variant="secure"
             size="lg"
             disabled={isUploading}
-            className="w-full mt-6 transition-all duration-200 hover:scale-105 hover:shadow-lg"
+            className="w-full mt-4 md:mt-6 transition-all duration-200 hover:scale-105 hover:shadow-lg text-sm md:text-base py-3 md:py-6"
           >
             {isUploading ? (
               <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                Creating Secure Content...
+                <div className="w-3 h-3 md:w-4 md:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                <span className="hidden sm:inline">Creating Secure Content...</span>
+                <span className="sm:hidden">Creating...</span>
               </>
             ) : (
               <>
-                <Shield className="w-4 h-4 mr-2" />
-                Create Secure Content
+                <Shield className="w-3 h-3 md:w-4 md:h-4 mr-2" />
+                <span className="hidden sm:inline">Create Secure Content</span>
+                <span className="sm:hidden">Create Content</span>
               </>
             )}
           </Button>
