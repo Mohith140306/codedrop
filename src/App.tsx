@@ -23,8 +23,8 @@ const App = () => (
           <main className="flex-1">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/send" element={<Navigate to="/" replace />} />
-              <Route path="/get" element={<Navigate to="/" replace />} />
+              <Route path="/send" element={<Send />} />
+              <Route path="/get" element={<Get />} />
               <Route path="/index" element={<Navigate to="/" replace />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
