@@ -26,7 +26,7 @@ const Footer = () => {
               Our mission is to make secure technology accessible to everyone.
             </p>
             <a 
-              href="https://ropebitlabs.com" 
+              href="https://ropebit.live" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary-glow transition-colors"
