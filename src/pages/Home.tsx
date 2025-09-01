@@ -132,6 +132,25 @@ const Home = () => {
                   <p className="text-muted-foreground">User privacy as a fundamental right</p>
                 </div>
               </div>
+              
+              {/* Team Section */}
+              <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-card/50 rounded-lg border border-border/30">
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-4 text-center">Our Leadership Team</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                  <div className="text-center p-3 bg-primary/5 rounded-lg border border-primary/10">
+                    <h4 className="text-sm sm:text-base font-bold text-primary">Sai Amarnadh</h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground font-medium">Founder</p>
+                  </div>
+                  <div className="text-center p-3 bg-accent/5 rounded-lg border border-accent/10">
+                    <h4 className="text-sm sm:text-base font-bold text-accent">Sravan Kumar</h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground font-medium">CTO</p>
+                  </div>
+                  <div className="text-center p-3 bg-success/5 rounded-lg border border-success/10">
+                    <h4 className="text-sm sm:text-base font-bold text-success">Mohith</h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground font-medium">CMO</p>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="space-y-4 sm:space-y-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <Card className="p-4 sm:p-6 shadow-soft border border-border/50">
