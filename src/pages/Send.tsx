@@ -124,27 +124,27 @@ const Send = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-4xl mx-auto px-4 space-y-8">
+    <div className="min-h-screen bg-background py-6 sm:py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4 animate-fade-in">
-          <div className="w-16 h-16 mx-auto gradient-primary rounded-full flex items-center justify-center">
-            <Upload className="w-8 h-8 text-primary-foreground" />
+        <div className="text-center space-y-3 sm:space-y-4 animate-fade-in">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto gradient-primary rounded-full flex items-center justify-center">
+            <Upload className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground px-2">
             Share Your Content
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
             Upload files or paste code snippets to share them securely with a unique access code.
           </p>
         </div>
 
         {/* Upload Section */}
-        <Card className="p-8 shadow-medium animate-scale-in">
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <FileText className="w-6 h-6 text-primary" />
-              <h2 className="text-xl font-semibold text-foreground">
+        <Card className="p-4 sm:p-6 lg:p-8 shadow-medium animate-scale-in">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              <h2 className="text-lg sm:text-xl font-semibold text-foreground">
                 Upload & Secure
               </h2>
             </div>
@@ -154,21 +154,21 @@ const Send = () => {
         </Card>
 
         {/* Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="p-6 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            <h3 className="text-lg font-semibold text-foreground mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">
               🔒 Secure by Design
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               All content is secured with unique access codes and stored safely. Only those with the correct code can access your shared content.
             </p>
           </Card>
           
-          <Card className="p-6 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <h3 className="text-lg font-semibold text-foreground mb-3">
+          <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">
               ⏰ Automatic Expiration
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               Set expiration times for your content. Files automatically delete after the specified time period for enhanced security.
             </p>
           </Card>

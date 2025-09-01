@@ -204,49 +204,50 @@ const Get = () => {
 
   if (accessedContent) {
     return (
-      <div className="min-h-screen gradient-subtle py-8">
-        <div className="max-w-4xl mx-auto px-4 space-y-6">
+      <div className="min-h-screen gradient-subtle py-6 sm:py-8">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 space-y-4 sm:space-y-6">
           {/* Header */}
-          <Card className="p-6 shadow-medium animate-fade-in">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 gradient-accent rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-accent-foreground" />
+          <Card className="p-4 sm:p-6 shadow-medium animate-fade-in">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 gradient-accent rounded-lg flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-accent-foreground" />
                 </div>
-                <div>
-                  <h1 className="text-xl font-bold text-foreground">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">
                     {accessedContent.type === 'file' ? accessedContent.filename : 'Code Snippet'}
                   </h1>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     {accessedContent.language && `Language: ${accessedContent.language}`}
                   </p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 {accessedContent.type === 'code' && (
-                  <Button onClick={handleCopyCode} variant="outline" size="sm" className="hover-scale">
-                    <Copy className="w-4 h-4 mr-2" />
+                  <Button onClick={handleCopyCode} variant="outline" size="sm" className="hover-scale text-xs sm:text-sm">
+                    <Copy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                     Copy
                   </Button>
                 )}
-                <Button onClick={handleDownload} variant="outline" size="sm" className="hover-scale">
-                  <Download className="w-4 h-4 mr-2" />
+                <Button onClick={handleDownload} variant="outline" size="sm" className="hover-scale text-xs sm:text-sm">
+                  <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Download
                 </Button>
-                <Button onClick={handleNewAccess} variant="default" size="sm" className="hover-scale">
-                  Access New Content
+                <Button onClick={handleNewAccess} variant="default" size="sm" className="hover-scale text-xs sm:text-sm">
+                  <span className="hidden sm:inline">Access New Content</span>
+                  <span className="sm:hidden">New Access</span>
                 </Button>
               </div>
             </div>
           </Card>
 
           {/* Content */}
-          <Card className="p-6 shadow-medium animate-scale-in">
-            <div className="space-y-4">
+          <Card className="p-4 sm:p-6 shadow-medium animate-scale-in">
+            <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-semibold text-foreground">Content</h2>
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                <h2 className="text-base sm:text-lg font-semibold text-foreground">Content</h2>
               </div>
               
               {accessedContent.type === 'file' && accessedContent.content.startsWith('data:image') ? (
@@ -256,8 +257,8 @@ const Get = () => {
                   className="max-w-full h-auto rounded-lg shadow-soft"
                 />
               ) : (
-                <div className="bg-muted rounded-lg p-4 shadow-soft">
-                  <pre className="whitespace-pre-wrap font-mono text-sm text-foreground overflow-x-auto">
+                <div className="bg-muted rounded-lg p-3 sm:p-4 shadow-soft">
+                  <pre className="whitespace-pre-wrap font-mono text-xs sm:text-sm text-foreground overflow-x-auto">
                     {accessedContent.content}
                   </pre>
                 </div>
@@ -270,27 +271,27 @@ const Get = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-2xl mx-auto px-4 space-y-8">
+    <div className="min-h-screen bg-background py-6 sm:py-8">
+      <div className="max-w-2xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4 animate-fade-in">
-          <div className="w-16 h-16 mx-auto gradient-primary rounded-full flex items-center justify-center">
-            <Eye className="w-8 h-8 text-primary-foreground" />
+        <div className="text-center space-y-3 sm:space-y-4 animate-fade-in">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto gradient-primary rounded-full flex items-center justify-center">
+            <Eye className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground px-2">
             Access Content
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-base sm:text-lg text-muted-foreground px-4">
             Enter the access code to view shared files or code.
           </p>
         </div>
 
         {/* Access Form */}
-        <Card className="p-8 shadow-medium animate-scale-in">
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <Key className="w-6 h-6 text-primary" />
-              <h2 className="text-xl font-semibold text-foreground">
+        <Card className="p-4 sm:p-6 lg:p-8 shadow-medium animate-scale-in">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Key className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              <h2 className="text-lg sm:text-xl font-semibold text-foreground">
                 Enter Access Code
               </h2>
             </div>
@@ -307,7 +308,7 @@ const Get = () => {
                   value={accessCode}
                   onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
                   onKeyPress={(e) => e.key === 'Enter' && handleAccess()}
-                  className="transition-smooth font-mono text-center tracking-widest"
+                  className="transition-smooth font-mono text-center tracking-widest text-base sm:text-lg py-3 sm:py-4"
                   maxLength={4}
                 />
               </div>
@@ -317,7 +318,7 @@ const Get = () => {
                 variant="default"
                 size="lg"
                 disabled={isLoading}
-                className="w-full gradient-primary hover:shadow-medium transition-all duration-300"
+                className="w-full gradient-primary hover:shadow-medium transition-all duration-300 py-3 sm:py-4 text-sm sm:text-base"
               >
                 {isLoading ? (
                   <>
@@ -336,12 +337,12 @@ const Get = () => {
         </Card>
 
         {/* Info Section */}
-        <Card className="p-6 shadow-soft animate-fade-in" style={{ animationDelay: '0.2s' }}>
+        <Card className="p-4 sm:p-6 shadow-soft animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <div className="text-center space-y-2">
-            <h3 className="text-lg font-semibold text-foreground">
+            <h3 className="text-base sm:text-lg font-semibold text-foreground">
               🔐 Secure Access
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Content is secured with unique access codes and may have expiration dates. Make sure you have the correct code from the sender.
             </p>
           </div>
