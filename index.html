@@ -47,7 +47,13 @@ s0.parentNode.insertBefore(s1,s0);
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
             .then((registration) => {
-              console.log('SW registered: ', registration);
+              console.log('SW registered:');
+              console.log({
+                scope: registration.scope,
+                installing: registration.installing,
+                waiting: registration.waiting,
+                active: registration.active,
+              });
             })
             .catch((registrationError) => {
               console.log('SW registration failed: ', registrationError);
