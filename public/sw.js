@@ -14,14 +14,19 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
+  // Network-first strategy for navigation requests.
+  if (event.request.mode === 'navigate') {
+    // This ensures the user always gets the latest version of the page.
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
         return response || fetch(event.request);
-      }
-    )
-  );
+      })
+    );
+  }
 });
 
 self.addEventListener('activate', (event) => {
