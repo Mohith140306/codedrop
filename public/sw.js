@@ -16,6 +16,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   // Network-first strategy for navigation requests.
   if (event.request.mode === 'navigate') {
+    // This ensures the user always gets the latest version of the page.
     event.respondWith(
       fetch(event.request).catch(() => caches.match(event.request))
     );
