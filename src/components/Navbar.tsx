@@ -17,17 +17,18 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 hover-scale">
-            <div className="w-6 h-6 md:w-8 md:h-8 gradient-primary rounded-lg flex items-center justify-center">
-              <Send className="w-3 h-3 md:w-5 md:h-5 text-primary-foreground" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-bold text-foreground">Sendix</span>
-              <span className="text-xs text-muted-foreground font-medium tracking-wide hidden sm:block">by Ropebit Labs</span>
-            </div>
-          </Link>
-
-          {/* Navigation Links */}
+        <Link to="/" className="flex items-center space-x-2 hover-scale">
+  <img
+    src="/assets/logo.png"
+    alt="Sendix Logo"
+    className="w-6 h-6 md:w-8 md:h-8 rounded-lg object-contain"
+  />
+  <div className="flex flex-col">
+    <span className="text-lg md:text-xl font-bold text-foreground">Sendix</span>
+    <span className="text-xs text-muted-foreground font-medium tracking-wide hidden sm:block">by Ropebit Labs</span>
+  </div>
+</Link>
+ {/* Navigation Links */}
           <div className="flex items-center space-x-4 md:space-x-8">
             {navItems.map((item) => (
               <Link
