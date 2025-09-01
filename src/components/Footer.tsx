@@ -42,7 +42,7 @@ const Footer = () => {
             <div className="space-y-2 text-sm text-muted-foreground">
               <p>Questions or feedback?</p>
               <a 
-                href="mailto:support@ropebitlabs.com" 
+                href="mailto:ropebitlabs@gmail.com" 
                 className="text-primary hover:text-primary-glow transition-colors"
               >
                 support@ropebitlabs.com
