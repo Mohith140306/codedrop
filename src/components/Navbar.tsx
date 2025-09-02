@@ -21,7 +21,7 @@ const Navbar = () => {
   <img
     src="/sendlo-removebg-preview.png"
     alt="Sendix Logo"
-    className="w-10 h-10 md:w-12 md:h-12 rounded-xl object-contain flex-shrink-0 bg-primary/5 p-1"
+    className="w-10 h-10 md:w-12 md:h-12 object-contain flex-shrink-0"
   />
   <div className="flex flex-col justify-center leading-tight">
     <span className="text-xl md:text-2xl font-bold text-foreground tracking-tight">SendiX</span>
