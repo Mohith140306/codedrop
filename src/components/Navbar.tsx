@@ -19,7 +19,7 @@ const Navbar = () => {
           {/* Logo */}
         <Link to="/" className="flex items-center space-x-2 hover-scale">
   <img
-    src="/Screenshot 2025-09-02 001258.png"
+    src="/sendlo-removebg-preview.png"
     alt="Sendix Logo"
     className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-contain flex-shrink-0"
   />
