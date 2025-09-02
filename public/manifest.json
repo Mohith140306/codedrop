@@ -1,6 +1,6 @@
 {
-  "name": "ShareSnap Secure",
-  "short_name": "ShareSnap",
+  "name": "Sendix Secure",
+  "short_name": "Sendix",
   "description": "Securely share files and code snippets with password protection",
   "start_url": "/",
   "display": "standalone",
@@ -11,20 +11,15 @@
   "lang": "en",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "48x48",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "/placeholder.svg",
+      "src": "/Screenshot 2025-09-02 001258.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/placeholder.svg",
+      "src": "/Screenshot 2025-09-02 001258.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

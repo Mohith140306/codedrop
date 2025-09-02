@@ -1,8 +1,6 @@
-const CACHE_NAME = 'sharesnap-v1';
+const CACHE_NAME = 'sendix-v2';
 const urlsToCache = [
   '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
   '/manifest.json'
 ];
 
