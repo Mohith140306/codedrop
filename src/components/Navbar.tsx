@@ -17,14 +17,14 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2 hover-scale">
+        <Link to="/" className="flex items-center space-x-3 hover-scale">
   <img
     src="/sendlo-removebg-preview.png"
     alt="Sendix Logo"
-    className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-contain flex-shrink-0"
+    className="w-10 h-10 md:w-12 md:h-12 rounded-xl object-contain flex-shrink-0 bg-primary/5 p-1"
   />
-  <div className="flex flex-col leading-tight">
-    <span className="text-lg md:text-xl font-bold text-foreground">SendiX</span>
+  <div className="flex flex-col justify-center leading-tight">
+    <span className="text-xl md:text-2xl font-bold text-foreground tracking-tight">SendiX</span>
     <span className="text-xs text-muted-foreground font-medium tracking-wide hidden sm:block">by Ropebit Labs</span>
   </div>
 </Link>
