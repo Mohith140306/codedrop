@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import Home from "./pages/Home";
 import Send from "./pages/Send";
 import Get from "./pages/Get";
@@ -31,6 +32,7 @@ const App = () => (
             </Routes>
           </main>
           <Footer />
+          <PWAInstallPrompt />
         </div>
       </BrowserRouter>
     </TooltipProvider>

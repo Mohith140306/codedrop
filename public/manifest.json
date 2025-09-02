@@ -1,7 +1,7 @@
 {
-  "name": "Sendix Secure",
-  "short_name": "Sendix",
-  "description": "Securely share files and code snippets with password protection",
+  "name": "SendiX Secure - Password Protected File & Code Sharing",
+  "short_name": "SendiX",
+  "description": "Securely share files and code snippets with password protection. No registration required, end-to-end security for your sensitive content.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
@@ -9,18 +9,60 @@
   "orientation": "portrait-primary",
   "categories": ["productivity", "utilities", "security"],
   "lang": "en",
-  "icons": [
+  "scope": "/",
+  "prefer_related_applications": false,
+  "shortcuts": [
     {
-      "src": "/Screenshot 2025-09-02 001258.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "name": "Send File",
+      "short_name": "Send",
+      "description": "Securely send a file or code snippet",
+      "url": "/send",
+      "icons": [
+        {
+          "src": "/sendlo-removebg-preview.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
-      "src": "/Screenshot 2025-09-02 001258.png",
+      "name": "Get File",  
+      "short_name": "Get",
+      "description": "Retrieve a shared file or code snippet",
+      "url": "/get",
+      "icons": [
+        {
+          "src": "/sendlo-removebg-preview.png", 
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "src": "/sendlo-removebg-preview.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/sendlo-removebg-preview.png",
+      "sizes": "512x512", 
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/sendlo-removebg-preview.png",
+      "sizes": "192x192",
+      "type": "image/png", 
+      "purpose": "maskable"
+    },
+    {
+      "src": "/sendlo-removebg-preview.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ]
 }
