@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MoreVertical } from 'lucide-react';
+import { MoreVertical, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export const MobileNavbar = () => {
-  const isMobile = useIsMobile();
   const location = useLocation();
+  const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  if (!isMobile) return null;
 
   const navItems = [
     { path: '/', label: 'Home' },
     { path: '/send', label: 'Send' },
     { path: '/get', label: 'Get' },
   ];
-
-  // Don't render anything if not mobile, but respect Rules of Hooks
-  if (!isMobile) {
-    return null;
-  }
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden">
