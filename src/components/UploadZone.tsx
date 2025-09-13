@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, FileText, Shield, Clock } from 'lucide-react';
+import { Upload, FileText, Shield, Clock, Wifi } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { LocalShareDialog } from '@/components/LocalShareDialog';
 
 interface UploadZoneProps {
   onUpload: (data: {
@@ -16,9 +17,10 @@ interface UploadZoneProps {
     filename?: string;
     language?: string;
   }) => void;
+  onLocalShare?: (file: File) => void;
 }
 
-export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
+export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload, onLocalShare }) => {
   const [activeTab, setActiveTab] = useState<'file' | 'code'>('file');
   const [dragActive, setDragActive] = useState(false);
   const [expiration, setExpiration] = useState('24h');
@@ -26,6 +28,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
   const [language, setLanguage] = useState('javascript');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [showLocalShare, setShowLocalShare] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -94,6 +97,19 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
       // Reset form after successful upload
       setSelectedFile(null);
       setCodeContent('');
+    }
+  };
+
+  const handleLocalShare = () => {
+    if (activeTab === 'file' && selectedFile) {
+      onLocalShare?.(selectedFile);
+      setShowLocalShare(true);
+    } else {
+      toast({
+        title: "File Required for Local Share",
+        description: "Local share only supports files. Please select a file to share.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -223,29 +239,57 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUpload }) => {
             </Select>
           </div>
           
-          <Button
-            onClick={handleShare}
-            variant="secure"
-            size="lg"
-            disabled={isUploading}
-            className="w-full mt-4 md:mt-6 transition-all duration-200 hover:scale-105 hover:shadow-lg text-sm md:text-base py-3 md:py-6"
-          >
-            {isUploading ? (
-              <>
-                <div className="w-3 h-3 md:w-4 md:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                <span className="hidden sm:inline">Creating Secure Content...</span>
-                <span className="sm:hidden">Creating...</span>
-              </>
-            ) : (
-              <>
-                <Shield className="w-3 h-3 md:w-4 md:h-4 mr-2" />
-                <span className="hidden sm:inline">Create Secure Content</span>
-                <span className="sm:hidden">Create Content</span>
-              </>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {activeTab === 'file' && selectedFile && (
+              <Button
+                onClick={handleLocalShare}
+                variant="outline"
+                size="lg"
+                disabled={isUploading}
+                className="w-full transition-all duration-200 hover:scale-105 hover:shadow-lg text-sm md:text-base py-3 md:py-6"
+              >
+                <Wifi className="w-3 h-3 md:w-4 md:h-4 mr-2" />
+                <span className="hidden sm:inline">Local Share (Fast, No Upload)</span>
+                <span className="sm:hidden">Local Share</span>
+              </Button>
             )}
-          </Button>
+            
+            <Button
+              onClick={handleShare}
+              variant="secure"
+              size="lg"
+              disabled={isUploading}
+              className={`w-full transition-all duration-200 hover:scale-105 hover:shadow-lg text-sm md:text-base py-3 md:py-6 ${
+                activeTab === 'file' && selectedFile ? 'md:col-span-1' : 'md:col-span-2'
+              }`}
+            >
+              {isUploading ? (
+                <>
+                  <div className="w-3 h-3 md:w-4 md:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                  <span className="hidden sm:inline">Creating Secure Content...</span>
+                  <span className="sm:hidden">Creating...</span>
+                </>
+              ) : (
+                <>
+                  <Shield className="w-3 h-3 md:w-4 md:h-4 mr-2" />
+                  <span className="hidden sm:inline">Cloud Upload & Share</span>
+                  <span className="sm:hidden">Cloud Share</span>
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </Card>
+      
+      <LocalShareDialog
+        isOpen={showLocalShare}
+        onClose={() => setShowLocalShare(false)}
+        file={selectedFile}
+        onFallbackToCloud={() => {
+          setShowLocalShare(false);
+          handleShare();
+        }}
+      />
     </div>
   );
 };

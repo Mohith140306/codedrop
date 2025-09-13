@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Eye, Download, Copy, FileText, Key } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Eye, Download, Copy, FileText, Key, Wifi } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { LocalReceiveDialog } from '@/components/LocalReceiveDialog';
 
 interface AccessedContent {
   type: 'file' | 'code';
@@ -20,7 +21,19 @@ const Get = () => {
   const [accessCode, setAccessCode] = useState('');
   const [accessedContent, setAccessedContent] = useState<AccessedContent | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showLocalReceive, setShowLocalReceive] = useState(false);
+  const [roomCodeFromUrl, setRoomCodeFromUrl] = useState('');
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if there's a room code in URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomParam = urlParams.get('room');
+    if (roomParam) {
+      setRoomCodeFromUrl(roomParam);
+      setShowLocalReceive(true);
+    }
+  }, []);
 
   const handleAccess = async () => {
     if (!accessCode || accessCode.length !== 4) {
@@ -313,40 +326,77 @@ const Get = () => {
                 />
               </div>
               
-              <Button
-                onClick={handleAccess}
-                variant="default"
-                size="lg"
-                disabled={isLoading}
-                className="w-full gradient-primary hover:shadow-medium transition-all duration-300 py-3 sm:py-4 text-sm sm:text-base"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                    Accessing...
-                  </>
-                ) : (
-                  <>
-                    <Eye className="w-4 h-4 mr-2" />
-                    Access Content
-                  </>
-                )}
-              </Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Button
+                  onClick={() => setShowLocalReceive(true)}
+                  variant="outline"
+                  size="lg"
+                  className="w-full transition-all duration-200 hover:scale-105 hover:shadow-lg text-sm md:text-base py-3 md:py-6"
+                >
+                  <Wifi className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Local Receive</span>
+                  <span className="sm:hidden">Local</span>
+                </Button>
+                
+                <Button
+                  onClick={handleAccess}
+                  variant="default"
+                  size="lg"
+                  disabled={isLoading}
+                  className="w-full gradient-primary hover:shadow-medium transition-all duration-300 py-3 sm:py-4 text-sm sm:text-base"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                      Accessing...
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-4 h-4 mr-2" />
+                      <span className="hidden sm:inline">Cloud Access</span>
+                      <span className="sm:hidden">Cloud</span>
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </Card>
 
         {/* Info Section */}
-        <Card className="p-4 sm:p-6 shadow-soft animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          <div className="text-center space-y-2">
-            <h3 className="text-base sm:text-lg font-semibold text-foreground">
-              🔐 Secure Access
-            </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Content is secured with unique access codes and may have expiration dates. Make sure you have the correct code from the sender.
-            </p>
-          </div>
-        </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card className="p-4 sm:p-6 shadow-soft animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="text-center space-y-2">
+              <h3 className="text-base sm:text-lg font-semibold text-foreground">
+                🔐 Cloud Access
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Access files uploaded to the cloud using secure access codes. Content may have expiration dates.
+              </p>
+            </div>
+          </Card>
+          
+          <Card className="p-4 sm:p-6 shadow-soft animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="text-center space-y-2">
+              <h3 className="text-base sm:text-lg font-semibold text-foreground">
+                📡 Local Receive
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Receive files directly from someone on the same WiFi network using a room code or QR scan.
+              </p>
+            </div>
+          </Card>
+        </div>
+
+        {/* Local Receive Dialog */}
+        <LocalReceiveDialog
+          isOpen={showLocalReceive}
+          onClose={() => {
+            setShowLocalReceive(false);
+            setRoomCodeFromUrl('');
+          }}
+          initialRoomCode={roomCodeFromUrl}
+        />
       </div>
     </div>
   );

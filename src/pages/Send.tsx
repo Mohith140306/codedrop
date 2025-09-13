@@ -3,6 +3,7 @@ import { FileText, Upload, Shield } from 'lucide-react';
 import { UploadZone } from '@/components/UploadZone';
 import { CodeShareDialog } from '@/components/CodeShareDialog';
 import { MobileSendView } from '@/components/MobileSendView';
+import { LocalShareDialog } from '@/components/LocalShareDialog';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -26,6 +27,8 @@ const Send = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [showCodeDialog, setShowCodeDialog] = useState(false);
+  const [showLocalShare, setShowLocalShare] = useState(false);
+  const [localShareFile, setLocalShareFile] = useState<File | null>(null);
 
   const generateUniqueCode = (): string => {
     const chars = '0123456789';
@@ -143,6 +146,11 @@ const Send = () => {
     }
   };
 
+  const handleLocalShare = (file: File) => {
+    setLocalShareFile(file);
+    setShowLocalShare(true);
+  };
+
   // Mobile view
   if (isMobile) {
     return (
@@ -193,7 +201,7 @@ const Send = () => {
               </h2>
             </div>
             
-            <UploadZone onUpload={handleUpload} />
+            <UploadZone onUpload={handleUpload} onLocalShare={handleLocalShare} />
           </div>
         </Card>
 
@@ -229,6 +237,26 @@ const Send = () => {
             code={generatedCode}
           />
         )}
+
+        {/* Local Share Dialog */}
+        <LocalShareDialog
+          isOpen={showLocalShare}
+          onClose={() => {
+            setShowLocalShare(false);
+            setLocalShareFile(null);
+          }}
+          file={localShareFile}
+          onFallbackToCloud={() => {
+            setShowLocalShare(false);
+            if (localShareFile) {
+              handleUpload({
+                type: 'file',
+                content: localShareFile,
+                expiration: '24h'
+              });
+            }
+          }}
+        />
       </div>
     </div>
   );
