@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { FileText, Upload, Shield } from 'lucide-react';
 import { UploadZone } from '@/components/UploadZone';
 import { CodeShareDialog } from '@/components/CodeShareDialog';
+import { MobileSendView } from '@/components/MobileSendView';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { supabase } from '@/integrations/supabase/client';
 
 interface StoredContent {
@@ -19,7 +21,9 @@ interface StoredContent {
 
 const Send = () => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [showCodeDialog, setShowCodeDialog] = useState(false);
 
@@ -40,7 +44,16 @@ const Send = () => {
     language?: string;
   }) => {
     setIsUploading(true);
+    setUploadProgress(0);
     const uniqueCode = generateUniqueCode();
+
+    // Simulate upload progress for demo
+    const progressInterval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 90) return prev;
+        return prev + Math.random() * 20;
+      });
+    }, 100);
 
     try {
       // Calculate expiration date
@@ -103,15 +116,21 @@ const Send = () => {
         }
       }
 
-      // Immediately show code and display success
-      setGeneratedCode(uniqueCode);
-      setShowCodeDialog(true);
+      // Complete progress and show success
+      clearInterval(progressInterval);
+      setUploadProgress(100);
       
-      toast({
-        title: "Content Shared Successfully",
-        description: `Your content has been secured with access code: ${uniqueCode}`,
-      });
+      setTimeout(() => {
+        setGeneratedCode(uniqueCode);
+        setShowCodeDialog(true);
+        
+        toast({
+          title: "Content Shared Successfully",
+          description: `Your content has been secured with access code: ${uniqueCode}`,
+        });
+      }, 500);
     } catch (error) {
+      clearInterval(progressInterval);
       console.error('Error uploading content:', error);
       toast({
         title: "Upload Failed",
@@ -120,9 +139,34 @@ const Send = () => {
       });
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
+  // Mobile view
+  if (isMobile) {
+    return (
+      <>
+        <MobileSendView
+          isUploading={isUploading}
+          uploadProgress={uploadProgress}
+          onUpload={handleUpload}
+        />
+        {generatedCode && (
+          <CodeShareDialog
+            isOpen={showCodeDialog}
+            onClose={() => {
+              setShowCodeDialog(false);
+              setGeneratedCode(null);
+            }}
+            code={generatedCode}
+          />
+        )}
+      </>
+    );
+  }
+
+  // Desktop view (unchanged)
   return (
     <div className="min-h-screen bg-background py-6 sm:py-8">
       <div className="max-w-4xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
