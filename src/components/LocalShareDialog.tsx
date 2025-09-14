@@ -39,6 +39,8 @@ export const LocalShareDialog: React.FC<LocalShareDialogProps> = ({
 
   const initializeLocalShare = async () => {
     try {
+      setConnectionStatus('creating');
+      
       const manager = new WebRTCManager(
         (progress) => setTransferProgress(progress),
         () => {
@@ -55,6 +57,14 @@ export const LocalShareDialog: React.FC<LocalShareDialogProps> = ({
             description: error,
             variant: "destructive",
           });
+        },
+        () => {
+          setConnectionStatus('connected');
+          toast({
+            title: "Receiver Connected!",
+            description: "Starting file transfer...",
+          });
+          setTimeout(() => sendFile(manager), 1000);
         }
       );
 
@@ -63,14 +73,6 @@ export const LocalShareDialog: React.FC<LocalShareDialogProps> = ({
       setRoomCode(code);
       setQrCodeUrl(generateQRCode(code));
       setConnectionStatus('waiting');
-      
-      // Wait for peer connection
-      setTimeout(() => {
-        if (connectionStatus === 'waiting') {
-          setConnectionStatus('connected');
-          sendFile(manager);
-        }
-      }, 2000); // Simulated connection for demo
 
     } catch (error) {
       console.error('Failed to create room:', error);

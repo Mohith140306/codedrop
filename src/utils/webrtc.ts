@@ -17,19 +17,24 @@ const CHUNK_SIZE = 16 * 1024; // 16KB chunks
 export class WebRTCManager {
   private pc: RTCPeerConnection | null = null;
   private dataChannel: RTCDataChannel | null = null;
+  private ws: WebSocket | null = null;
   private onProgress?: (progress: number) => void;
   private onComplete?: (file: File) => void;
   private onError?: (error: string) => void;
+  private onConnected?: () => void;
   private currentTransfer: FileTransfer | null = null;
+  private roomCode: string = '';
 
   constructor(
     onProgress?: (progress: number) => void,
     onComplete?: (file: File) => void,
-    onError?: (error: string) => void
+    onError?: (error: string) => void,
+    onConnected?: () => void
   ) {
     this.onProgress = onProgress;
     this.onComplete = onComplete;
     this.onError = onError;
+    this.onConnected = onConnected;
   }
 
   private getSignalingUrl(): string {
@@ -38,6 +43,7 @@ export class WebRTCManager {
 
   async createRoom(): Promise<string> {
     const roomCode = Math.random().toString(36).substr(2, 6).toUpperCase();
+    this.roomCode = roomCode;
     
     this.pc = new RTCPeerConnection({
       iceServers: [
@@ -53,28 +59,48 @@ export class WebRTCManager {
 
     this.setupDataChannelHandlers(this.dataChannel);
 
-    const ws = new WebSocket(this.getSignalingUrl());
+    this.ws = new WebSocket(this.getSignalingUrl());
     
     return new Promise((resolve, reject) => {
-      ws.onopen = () => {
-        ws.send(JSON.stringify({ type: 'create-room', roomCode }));
+      if (!this.ws) {
+        reject(new Error('Failed to create WebSocket connection'));
+        return;
+      }
+
+      this.ws.onopen = () => {
+        this.ws!.send(JSON.stringify({ type: 'create-room', roomCode }));
       };
 
-      ws.onmessage = async (event) => {
+      this.ws.onmessage = async (event) => {
         const message = JSON.parse(event.data);
         
         if (message.type === 'room-created') {
           resolve(roomCode);
+        } else if (message.type === 'peer-joined') {
+          // Peer has joined, create offer
+          const offer = await this.pc!.createOffer();
+          await this.pc!.setLocalDescription(offer);
+          this.ws!.send(JSON.stringify({
+            type: 'offer',
+            roomCode,
+            offer
+          }));
         } else if (message.type === 'answer') {
           await this.pc!.setRemoteDescription(message.answer);
         } else if (message.type === 'ice-candidate') {
           await this.pc!.addIceCandidate(message.candidate);
+        } else if (message.type === 'error') {
+          reject(new Error(message.message));
         }
       };
 
+      this.ws.onerror = () => {
+        reject(new Error('WebSocket connection failed'));
+      };
+
       this.pc!.onicecandidate = (event) => {
-        if (event.candidate) {
-          ws.send(JSON.stringify({
+        if (event.candidate && this.ws) {
+          this.ws.send(JSON.stringify({
             type: 'ice-candidate',
             roomCode,
             candidate: event.candidate
@@ -82,20 +108,13 @@ export class WebRTCManager {
         }
       };
 
-      this.pc!.createOffer().then(offer => {
-        this.pc!.setLocalDescription(offer);
-        ws.send(JSON.stringify({
-          type: 'offer',
-          roomCode,
-          offer
-        }));
-      });
-
       setTimeout(() => reject(new Error('Room creation timeout')), 10000);
     });
   }
 
   async joinRoom(roomCode: string): Promise<void> {
+    this.roomCode = roomCode;
+    
     this.pc = new RTCPeerConnection({
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
@@ -103,36 +122,47 @@ export class WebRTCManager {
       ]
     });
 
-    const ws = new WebSocket(this.getSignalingUrl());
+    this.ws = new WebSocket(this.getSignalingUrl());
     
     return new Promise((resolve, reject) => {
-      ws.onopen = () => {
-        ws.send(JSON.stringify({ type: 'join-room', roomCode }));
+      if (!this.ws) {
+        reject(new Error('Failed to create WebSocket connection'));
+        return;
+      }
+
+      this.ws.onopen = () => {
+        this.ws!.send(JSON.stringify({ type: 'join-room', roomCode }));
       };
 
-      ws.onmessage = async (event) => {
+      this.ws.onmessage = async (event) => {
         const message = JSON.parse(event.data);
         
-        if (message.type === 'offer') {
+        if (message.type === 'joined') {
+          resolve();
+        } else if (message.type === 'offer') {
           await this.pc!.setRemoteDescription(message.offer);
           const answer = await this.pc!.createAnswer();
           await this.pc!.setLocalDescription(answer);
           
-          ws.send(JSON.stringify({
+          this.ws!.send(JSON.stringify({
             type: 'answer',
             roomCode,
             answer
           }));
         } else if (message.type === 'ice-candidate') {
           await this.pc!.addIceCandidate(message.candidate);
-        } else if (message.type === 'joined') {
-          resolve();
+        } else if (message.type === 'error') {
+          reject(new Error(message.message));
         }
       };
 
+      this.ws.onerror = () => {
+        reject(new Error('WebSocket connection failed'));
+      };
+
       this.pc!.onicecandidate = (event) => {
-        if (event.candidate) {
-          ws.send(JSON.stringify({
+        if (event.candidate && this.ws) {
+          this.ws.send(JSON.stringify({
             type: 'ice-candidate',
             roomCode,
             candidate: event.candidate
@@ -152,6 +182,7 @@ export class WebRTCManager {
   private setupDataChannelHandlers(channel: RTCDataChannel) {
     channel.onopen = () => {
       console.log('Data channel opened');
+      this.onConnected?.();
     };
 
     channel.onmessage = (event) => {
@@ -250,8 +281,10 @@ export class WebRTCManager {
   disconnect() {
     this.dataChannel?.close();
     this.pc?.close();
+    this.ws?.close();
     this.dataChannel = null;
     this.pc = null;
+    this.ws = null;
   }
 }
 

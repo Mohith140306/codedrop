@@ -62,17 +62,18 @@ export const LocalReceiveDialog: React.FC<LocalReceiveDialogProps> = ({
             description: error,
             variant: "destructive",
           });
+        },
+        () => {
+          setConnectionStatus('connected');
+          toast({
+            title: "Connected!",
+            description: "Waiting for file transfer to begin...",
+          });
         }
       );
 
       setWebrtcManager(manager);
       await manager.joinRoom(roomCode.toUpperCase());
-      setConnectionStatus('connected');
-      
-      toast({
-        title: "Connected!",
-        description: "Waiting for file transfer to begin...",
-      });
 
     } catch (error) {
       console.error('Failed to connect:', error);
