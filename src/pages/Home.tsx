@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Lock, FileText, Zap, Upload, Download } from 'lucide-react';
+import { Shield, Lock, FileText, Zap, Upload, Download, Wifi, Cloud } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import heroImage from '@/assets/hero-security.jpg';
@@ -26,7 +26,7 @@ const Home = () => {
             </div>
             
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-tight px-2">
-              Share Files & Code
+              Share Any Size File
               <br />
               <span className="gradient-primary bg-clip-text text-transparent">
                 Securely
@@ -34,8 +34,8 @@ const Home = () => {
             </h1>
             
             <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4 sm:px-6">
-              Password-protected sharing for your sensitive files and code snippets. 
-              No accounts required, just secure sharing in seconds.
+              Hybrid cloud + P2P system for unlimited file sharing. Small files use cloud storage, large files use direct transfer.
+              No size limits, no accounts required!
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-6 sm:mt-8 px-4">
@@ -70,32 +70,32 @@ const Home = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             <Card className="p-4 sm:p-6 lg:p-8 text-center space-y-3 sm:space-y-4 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto gradient-primary rounded-xl flex items-center justify-center">
-                <Lock className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-foreground" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto bg-blue-500 rounded-xl flex items-center justify-center">
+                <Cloud className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-foreground">Password Protected</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-foreground">Cloud Mode (≤100MB)</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                Every share requires a password. Your content stays private and secure with no unauthorized access.
+                Small files are stored securely in the cloud with 4-digit access codes. Perfect for documents, images, and code snippets.
               </p>
             </Card>
             
             <Card className="p-4 sm:p-6 lg:p-8 text-center space-y-3 sm:space-y-4 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto gradient-accent rounded-xl flex items-center justify-center">
-                <FileText className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-accent-foreground" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto bg-purple-500 rounded-xl flex items-center justify-center">
+                <Wifi className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-foreground">Files & Code</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-foreground">P2P Mode (>100MB)</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                Share any file type or code snippets with syntax highlighting support and easy copying.
+                Large files use direct peer-to-peer transfer with end-to-end encryption. No size limits - share movies, games, or any large content!
               </p>
             </Card>
             
             <Card className="p-4 sm:p-6 lg:p-8 text-center space-y-3 sm:space-y-4 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.3s' }}>
-              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto bg-success rounded-xl flex items-center justify-center">
-                <Zap className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto gradient-primary rounded-xl flex items-center justify-center">
+                <Shield className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-foreground" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-foreground">No Registration</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-foreground">Smart Fallback</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                Start sharing immediately. No accounts, no hassle, just secure sharing that works.
+                If P2P fails due to network restrictions, files automatically fallback to temporary cloud storage with 24h auto-delete.
               </p>
             </Card>
           </div>
@@ -178,15 +178,15 @@ const Home = () => {
       <section className="py-12 sm:py-16 lg:py-20 gradient-subtle">
         <div className="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 text-center space-y-4 sm:space-y-6 lg:space-y-8 animate-fade-in">
           <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground px-2">
-            Ready to Share Securely?
+            Ready to Share Unlimited Files?
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-            Join thousands of users who trust Sendix for their secure sharing needs.
+            Experience the future of file sharing with our hybrid cloud + P2P system.
           </p>
           <Link to="/send" className="inline-block">
             <Button size="lg" className="gradient-primary hover:shadow-medium transition-all duration-300 hover-scale px-6 py-3 text-sm sm:text-base">
               <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              Get Started Now
+              Start Sharing Now
             </Button>
           </Link>
         </div>

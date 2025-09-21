@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, Download, Copy, FileText, Key, Wifi } from 'lucide-react';
+import { Eye, Download, Copy, FileText, Key, Wifi, Cloud, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { LocalReceiveDialog } from '@/components/LocalReceiveDialog';
+import { P2PReceiveDialog } from '@/components/P2PReceiveDialog';
 
 interface AccessedContent {
   type: 'file' | 'code';
@@ -21,7 +21,7 @@ const Get = () => {
   const [accessCode, setAccessCode] = useState('');
   const [accessedContent, setAccessedContent] = useState<AccessedContent | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showLocalReceive, setShowLocalReceive] = useState(false);
+  const [showP2PReceive, setShowP2PReceive] = useState(false);
   const [roomCodeFromUrl, setRoomCodeFromUrl] = useState('');
   const { toast } = useToast();
 
@@ -31,7 +31,13 @@ const Get = () => {
     const roomParam = urlParams.get('room');
     if (roomParam) {
       setRoomCodeFromUrl(roomParam);
-      setShowLocalReceive(true);
+      setShowP2PReceive(true);
+    }
+    
+    // Check for access code in URL
+    const codeParam = urlParams.get('code');
+    if (codeParam) {
+      setAccessCode(codeParam);
     }
   }, []);
 
@@ -289,13 +295,13 @@ const Get = () => {
         {/* Header */}
         <div className="text-center space-y-3 sm:space-y-4 animate-fade-in">
           <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto gradient-primary rounded-full flex items-center justify-center">
-            <Eye className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-foreground" />
+            <Zap className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-foreground" />
           </div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground px-2">
-            Access Content
+            Receive Any Size File
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground px-4">
-            Enter the access code to view shared files or code.
+            Use access codes for cloud files or room codes for direct P2P transfers.
           </p>
         </div>
 
@@ -328,14 +334,14 @@ const Get = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Button
-                  onClick={() => setShowLocalReceive(true)}
+                  onClick={() => setShowP2PReceive(true)}
                   variant="outline"
                   size="lg"
                   className="w-full transition-all duration-200 hover:scale-105 hover:shadow-lg text-sm md:text-base py-3 md:py-6"
                 >
                   <Wifi className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Local Receive</span>
-                  <span className="sm:hidden">Local</span>
+                  <span className="hidden sm:inline">P2P Receive</span>
+                  <span className="sm:hidden">P2P</span>
                 </Button>
                 
                 <Button
@@ -367,32 +373,34 @@ const Get = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card className="p-4 sm:p-6 shadow-soft animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="text-center space-y-2">
+              <Cloud className="w-8 h-8 mx-auto text-primary" />
               <h3 className="text-base sm:text-lg font-semibold text-foreground">
-                🔐 Cloud Access
+                Cloud Access (4-digit code)
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Access files uploaded to the cloud using secure access codes. Content may have expiration dates.
+                Access small files (≤100MB) stored in secure cloud storage using 4-digit access codes. Files may have expiration dates.
               </p>
             </div>
           </Card>
           
           <Card className="p-4 sm:p-6 shadow-soft animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <div className="text-center space-y-2">
+              <Wifi className="w-8 h-8 mx-auto text-accent" />
               <h3 className="text-base sm:text-lg font-semibold text-foreground">
-                📡 Local Receive
+                P2P Receive (4-digit room)
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Receive files directly from someone on the same WiFi network using a room code or QR scan.
+                Receive large files directly from the sender using a 4-digit room code or QR scan. No size limits, encrypted transfer.
               </p>
             </div>
           </Card>
         </div>
 
-        {/* Local Receive Dialog */}
-        <LocalReceiveDialog
-          isOpen={showLocalReceive}
+        {/* P2P Receive Dialog */}
+        <P2PReceiveDialog
+          isOpen={showP2PReceive}
           onClose={() => {
-            setShowLocalReceive(false);
+            setShowP2PReceive(false);
             setRoomCodeFromUrl('');
           }}
           initialRoomCode={roomCodeFromUrl}
