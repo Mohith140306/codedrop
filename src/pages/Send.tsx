@@ -220,7 +220,7 @@ const Send = () => {
           
           <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">
-              🚀 P2P Mode (>100MB)
+              🚀 P2P Mode ({'>'} 100MB)
             </h3>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               Large files use direct peer-to-peer transfer with end-to-end encryption. No size limits - share movies, games, or any large content!

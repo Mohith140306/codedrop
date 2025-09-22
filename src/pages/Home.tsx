@@ -83,7 +83,7 @@ const Home = () => {
               <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto bg-purple-500 rounded-xl flex items-center justify-center">
                 <Wifi className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-foreground">P2P Mode (>100MB)</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-foreground">P2P Mode ({'>'} 100MB)</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Large files use direct peer-to-peer transfer with end-to-end encryption. No size limits - share movies, games, or any large content!
               </p>
