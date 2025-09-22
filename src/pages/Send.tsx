@@ -181,24 +181,24 @@ const Send = () => {
     <div className="min-h-screen bg-background py-6 sm:py-8">
       <div className="max-w-4xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="text-center space-y-3 sm:space-y-4 animate-fade-in">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto gradient-primary rounded-full flex items-center justify-center">
+        <div className="text-center space-y-4 sm:space-y-6 animate-fade-in">
+          <div className="w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 mx-auto gradient-elegant rounded-2xl flex items-center justify-center shadow-elegant">
             <Zap className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground px-2">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground px-2">
             Share Any Size File
           </h1>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4 font-light">
             Small files use cloud storage, large files use direct P2P transfer. No size limits!
           </p>
         </div>
 
         {/* Upload Section */}
-        <Card className="p-4 sm:p-6 lg:p-8 shadow-medium animate-scale-in">
+        <Card className="p-6 sm:p-8 lg:p-10 shadow-elegant animate-scale-in glass-card border border-border/30">
           <div className="space-y-4 sm:space-y-6">
             <div className="flex items-center gap-2 sm:gap-3">
-              <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              <h2 className="text-lg sm:text-xl font-semibold text-foreground">
+              <Zap className="w-6 h-6 sm:w-7 sm:h-7 text-elegant" />
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 Hybrid Transfer System
               </h2>
             </div>
@@ -208,42 +208,42 @@ const Send = () => {
         </Card>
 
         {/* Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-          <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          <Card className="p-6 sm:p-8 shadow-elegant hover:shadow-strong transition-elegant hover-lift animate-fade-in glass-card" style={{ animationDelay: '0.1s' }}>
+            <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4">
               ☁️ Cloud Mode (≤100MB)
             </h3>
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-light">
               Small files are uploaded to secure cloud storage with 4-digit access codes. Perfect for documents, images, and code snippets.
             </p>
           </Card>
           
-          <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">
+          <Card className="p-6 sm:p-8 shadow-elegant hover:shadow-strong transition-elegant hover-lift animate-fade-in glass-card" style={{ animationDelay: '0.2s' }}>
+            <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4">
               🚀 P2P Mode ({'>'} 100MB)
             </h3>
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-light">
               Large files use direct peer-to-peer transfer with end-to-end encryption. No size limits - share movies, games, or any large content!
             </p>
           </Card>
         </div>
 
         {/* Additional Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-          <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          <Card className="p-6 sm:p-8 shadow-elegant hover:shadow-strong transition-elegant hover-lift animate-fade-in glass-card" style={{ animationDelay: '0.3s' }}>
+            <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4">
               🔒 End-to-End Security
             </h3>
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-light">
               All transfers use AES encryption. P2P transfers are encrypted during transit, cloud files are secured with access codes.
             </p>
           </Card>
           
-          <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-all duration-300 hover-scale animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">
+          <Card className="p-6 sm:p-8 shadow-elegant hover:shadow-strong transition-elegant hover-lift animate-fade-in glass-card" style={{ animationDelay: '0.4s' }}>
+            <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4">
               🔄 Smart Fallback
             </h3>
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-light">
               If P2P connection fails due to network restrictions, files automatically fallback to temporary cloud storage with 24h auto-delete.
             </p>
           </Card>

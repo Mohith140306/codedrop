@@ -293,24 +293,24 @@ const Get = () => {
     <div className="min-h-screen bg-background py-6 sm:py-8">
       <div className="max-w-2xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="text-center space-y-3 sm:space-y-4 animate-fade-in">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto gradient-primary rounded-full flex items-center justify-center">
+        <div className="text-center space-y-4 sm:space-y-6 animate-fade-in">
+          <div className="w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 mx-auto gradient-elegant rounded-2xl flex items-center justify-center shadow-elegant">
             <Zap className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground px-2">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground px-2">
             Receive Any Size File
           </h1>
-          <p className="text-base sm:text-lg text-muted-foreground px-4">
+          <p className="text-lg sm:text-xl text-muted-foreground px-4 font-light">
             Use access codes for cloud files or room codes for direct P2P transfers.
           </p>
         </div>
 
         {/* Access Form */}
-        <Card className="p-4 sm:p-6 lg:p-8 shadow-medium animate-scale-in">
+        <Card className="p-6 sm:p-8 lg:p-10 shadow-elegant animate-scale-in glass-card border border-border/30">
           <div className="space-y-4 sm:space-y-6">
             <div className="flex items-center gap-2 sm:gap-3">
-              <Key className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              <h2 className="text-lg sm:text-xl font-semibold text-foreground">
+              <Key className="w-6 h-6 sm:w-7 sm:h-7 text-elegant" />
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 Enter Access Code
               </h2>
             </div>
@@ -327,7 +327,7 @@ const Get = () => {
                   value={accessCode}
                   onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
                   onKeyPress={(e) => e.key === 'Enter' && handleAccess()}
-                  className="transition-smooth font-mono text-center tracking-widest text-base sm:text-lg py-3 sm:py-4"
+                  className="transition-elegant font-mono text-center tracking-widest text-lg sm:text-xl py-4 sm:py-5 border-2 border-border/30 focus:border-accent shadow-elegant"
                   maxLength={4}
                 />
               </div>
@@ -335,9 +335,9 @@ const Get = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Button
                   onClick={() => setShowP2PReceive(true)}
-                  variant="outline"
-                  size="lg"
-                  className="w-full transition-all duration-200 hover:scale-105 hover:shadow-lg text-sm md:text-base py-3 md:py-6"
+                  variant="accent"
+                  size="xl"
+                  className="w-full transition-elegant hover-lift text-base md:text-lg py-4 md:py-6"
                 >
                   <Wifi className="w-4 h-4 mr-2" />
                   <span className="hidden sm:inline">P2P Receive</span>
@@ -346,10 +346,10 @@ const Get = () => {
                 
                 <Button
                   onClick={handleAccess}
-                  variant="default"
-                  size="lg"
+                  variant="elegant"
+                  size="xl"
                   disabled={isLoading}
-                  className="w-full gradient-primary hover:shadow-medium transition-all duration-300 py-3 sm:py-4 text-sm sm:text-base"
+                  className="w-full transition-elegant hover-lift py-4 sm:py-6 text-base sm:text-lg"
                 >
                   {isLoading ? (
                     <>
@@ -370,26 +370,30 @@ const Get = () => {
         </Card>
 
         {/* Info Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="p-4 sm:p-6 shadow-soft animate-fade-in" style={{ animationDelay: '0.2s' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          <Card className="p-6 sm:p-8 shadow-elegant animate-fade-in glass-card hover-lift transition-elegant" style={{ animationDelay: '0.2s' }}>
             <div className="text-center space-y-2">
-              <Cloud className="w-8 h-8 mx-auto text-primary" />
-              <h3 className="text-base sm:text-lg font-semibold text-foreground">
+              <div className="w-12 h-12 mx-auto gradient-primary rounded-xl flex items-center justify-center shadow-elegant">
+                <Cloud className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground">
                 Cloud Access (4-digit code)
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-base text-muted-foreground leading-relaxed font-light">
                 Access small files (≤100MB) stored in secure cloud storage using 4-digit access codes. Files may have expiration dates.
               </p>
             </div>
           </Card>
           
-          <Card className="p-4 sm:p-6 shadow-soft animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <Card className="p-6 sm:p-8 shadow-elegant animate-fade-in glass-card hover-lift transition-elegant" style={{ animationDelay: '0.3s' }}>
             <div className="text-center space-y-2">
-              <Wifi className="w-8 h-8 mx-auto text-accent" />
-              <h3 className="text-base sm:text-lg font-semibold text-foreground">
+              <div className="w-12 h-12 mx-auto gradient-accent rounded-xl flex items-center justify-center shadow-elegant">
+                <Wifi className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground">
                 P2P Receive (4-digit room)
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-base text-muted-foreground leading-relaxed font-light">
                 Receive large files directly from the sender using a 4-digit room code or QR scan. No size limits, encrypted transfer.
               </p>
             </div>
