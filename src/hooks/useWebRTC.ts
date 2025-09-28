@@ -260,8 +260,27 @@ export const useWebRTC = () => {
     setIsLoading(true);
     const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    // Skip database insertion to avoid schema cache issues in local dev
-    // In a production environment, this would be re-enabled.
+    const file = files[0];
+    if (!file) {
+      setError("No file selected to generate a code.");
+      setIsLoading(false);
+      return "";
+    }
+
+    const { error: insertError } = await supabase.from('p2p_fallback_files').insert({
+      room_code: roomCode,
+      filename: file.name,
+      file_size: file.size,
+      file_type: file.type,
+      file_path: `p2p/${roomCode}/${file.name}`,
+      checksum: 'none',
+    });
+
+    if (insertError) {
+      setError(`Database error: Could not create room. ${insertError.message}`);
+      setIsLoading(false);
+      return "";
+    }
 
     await setupSignaling(roomCode, 'sender');
     return roomCode;
@@ -269,8 +288,16 @@ export const useWebRTC = () => {
 
   const joinRoom = async (roomCode: string) => {
     setIsLoading(true);
-    const { data, error } = await supabase.from('p2p_fallback_files').select('id').eq('room_code', roomCode).single();
-    if (error || !data) { setError('Room not found or has expired.'); setIsLoading(false); return; }
+
+    const { data, error } = await supabase.rpc('get_fallback_file_by_room_code', {
+      p_room_code: roomCode,
+    });
+
+    if (error || !data || data.length === 0) {
+      setError('Room not found or has expired. Please check the code and try again.');
+      setIsLoading(false);
+      return;
+    }
     await setupSignaling(roomCode, 'receiver');
   };
 
