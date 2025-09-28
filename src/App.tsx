@@ -12,7 +12,6 @@ import Home from "./pages/Home";
 import Send from "./pages/Send";
 import Get from "./pages/Get";
 import NotFound from "./pages/NotFound";
-import FileTransferPage from "./pages/FileTransferPage";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +29,6 @@ const App = () => (
                 <Route path="/" element={<Home />} />
                 <Route path="/send" element={<Send />} />
                 <Route path="/get" element={<Get />} />
-                <Route path="/transfer" element={<FileTransferPage />} />
                 <Route path="/index" element={<Navigate to="/" replace />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
