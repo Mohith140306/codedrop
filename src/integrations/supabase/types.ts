@@ -14,39 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      p2p_fallback_files: {
+      shared_content: {
         Row: {
-          id: string
-          room_code: string
-          file_path: string
-          filename: string
-          file_size: number
-          file_type: string
-          checksum: string
-          expires_at: string
+          access_code: string
+          content_text: string | null
+          content_type: string
           created_at: string
+          expires_at: string
+          file_path: string | null
+          filename: string | null
+          id: string
+          language: string | null
         }
         Insert: {
-          id?: string
-          room_code: string
-          file_path: string
-          filename: string
-          file_size: number
-          file_type: string
-          checksum: string
-          expires_at?: string
+          access_code: string
+          content_text?: string | null
+          content_type: string
           created_at?: string
+          expires_at: string
+          file_path?: string | null
+          filename?: string | null
+          id?: string
+          language?: string | null
         }
         Update: {
-          id?: string
-          room_code?: string
-          file_path?: string
-          filename?: string
-          file_size?: number
-          file_type?: string
-          checksum?: string
-          expires_at?: string
+          access_code?: string
+          content_text?: string | null
+          content_type?: string
           created_at?: string
+          expires_at?: string
+          file_path?: string | null
+          filename?: string | null
+          id?: string
+          language?: string | null
         }
         Relationships: []
       }
@@ -55,22 +55,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      cleanup_expired_fallback_files: {
+      cleanup_expired_content: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
-      get_fallback_file_by_room_code: {
-        Args: { p_room_code: string }
+      get_shared_content_by_access_code: {
+        Args: { p_access_code: string }
         Returns: {
-          id: string
-          room_code: string
+          access_code: string
+          content_text: string
+          content_type: string
+          created_at: string
+          expires_at: string
           file_path: string
           filename: string
-          file_size: number
-          file_type: string
-          checksum: string
-          expires_at: string
-          created_at: string
+          id: string
+          language: string
         }[]
       }
     }
